@@ -5,10 +5,14 @@
 const Game = function() {
   this.settings = 0;//gameSettings.getGameState();
   this.update = function() {
-    console.log("Game Update");
+    //console.log("Game Update");
   };
 };
-Game.prototype = { constructor : Game };
+Game.prototype = {
+  constructor : Game,
+  setup: function() {
+    console.log("Game Setup")
+  }};
 
 // class Game {
 //   constructor() {

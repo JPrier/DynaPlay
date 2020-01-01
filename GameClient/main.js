@@ -1,17 +1,5 @@
 // Main will call all needed update calls to game and to display
 
-
-/// OBJECTS
-
-//let controller = new Controller();
-let game = new Game();
-//let display = new Display();
-//let engine = new Engine();
-
-/// INIT
-
-let scale = 1; //Scale of the game canvas (1 will fill the full view)
-
 /// FUNCTIONS
 
 let keyPress = function(event) {
@@ -32,7 +20,7 @@ let render = function() {
   //TODO display.drawObjects
 
   // display.render();
-  console.log("render")
+  //console.log("render")
 };
 
 let update = function() {
@@ -44,7 +32,20 @@ let update = function() {
   // TODO: add a condition to stop the engine (an end goal parameter)
 };
 
+/// OBJECTS
+
+//let controller = new Controller();
+let game = new Game();
+//let display = new Display();
+let engine = new Engine(1000/30, update, render);
+
+/// INIT
+
+let scale = 1; //Scale of the game canvas (1 will fill the full view)
+
+// START
+
 window.addEventListener("keydown", keyPress);
 window.addEventListener("resize", resize);
 
-update();
+engine.start();

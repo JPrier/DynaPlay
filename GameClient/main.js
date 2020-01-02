@@ -11,7 +11,7 @@ let resize = function(event) {
   display.resize(document.documentElement.clientWidth,
                  document.documentElement.clientHeight,
                  scale);
-  display.drawObject();
+  //display.drawObject();
 };
 
 let render = function() {
@@ -45,7 +45,8 @@ let scale = 1; //Scale of the game canvas (1 will fill the full view)
 
 // START
 
-game.setup(300, [new Shape(0, 5, 5, "white", 10, 10), new Shape(0, 2, 2, "blue", 100, 100)])
+game.setup(300, [new Shape(0, 10, 10, 50, 50, "white"),
+                 new Shape(0, 100, 100, 20, 20, "blue")])
 
 window.addEventListener("keydown", keyPress);
 window.addEventListener("resize", resize);

@@ -6,9 +6,10 @@
 // 1 - Circle
 // 2 - Hexagon
 
-
-const Shape = function(shapeType, width, height, color) {
+const Shape = function(shapeType, loc_x, loc_y, width, height, color) {
   this.shapeType = shapeType;
+  this.loc_x = loc_x;
+  this.loc_y = loc_y;
   this.width = width;
   this.height = height;
   this.color = color;

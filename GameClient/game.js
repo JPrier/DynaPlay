@@ -4,25 +4,21 @@
 
 const Game = function() {
   this.settings = 0;//gameSettings.getGameState();
-  this.update = function() {
-    //console.log("Game Update");
-  };
   this.map = {};
+  this.player = undefined;
+  this.npcs = [];
+  this.update = function() {
+    //TODO: update any objects that need to update on a time_step
+  };
 };
 Game.prototype = {
   constructor : Game,
-  setup: function(size, objects) {
+  setup: function(size, objects, player, npcs) {
     this.map = {
       objects: objects,
       size: size
     }
-  }};
-
-// class Game {
-//   constructor() {
-//     this.settings = 0;
-//   }
-//   update() {
-//     console.log("Game Update");
-//   }
-// }
+    this.player = player;
+    this.npcs = npcs;
+  }
+};

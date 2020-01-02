@@ -9,15 +9,18 @@ const Display = function(canvas, color) {
   this.buffer.fillRect(0, 0, this.buffer.canvas.width, this.buffer.canvas.height);
 
   this.drawMap = function(map) {
-    // TODO: create a generic map object that can be used to create random maps
-    //for (let i = map.length - 1; i > -1; -- i) {
-      //this.drawObject(map[i].shape, ...)
-    //}
+    for (let i = map.objects.length - 1; i > -1; -- i) {
+      this.drawObject(map.objects[i])
+    }
   }
 
-  this.drawObject = function(shape, source_x, source_y, destination_x,
-                             destination_y, width, height) {
-      //TODO: add switch cases for each shape and draw each shape onto the buffer
+  this.drawObject = function(shape) {
+      // SQUARE/RECT
+      if (shape.shapeType == 0) {
+        this.buffer.fillStyle = shape.color;
+        this.buffer.fillRect(shape.loc_x, shape.loc_y, shape.width, shape.height);
+      }
+      //TODO: Add other shape types
   }
 
   this.resize = function(width, height, height_width_ratio) {
@@ -28,6 +31,8 @@ const Display = function(canvas, color) {
       this.context.canvas.height = height;
       this.context.canvas.width = height / height_width_ratio;
     }
+
+    this.context.imageSmoothingEnabled = false;
   };
 };
 

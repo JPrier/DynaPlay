@@ -4,7 +4,7 @@
 
 let keyPress = function(event) {
   //controller.keyPress(event.type, event.keyCode);
-  console.log("keypress")
+  game.map.objects[0].color == "white" ?  game.map.objects[0].color = "blue" : game.map.objects[0].color = "white";
 };
 
 let resize = function(event) {
@@ -18,7 +18,7 @@ let resize = function(event) {
 let render = function() {
 
   //TODO draw game map (static objects in map array)
-
+  display.drawMap(game.map);
   //TODO draw objects (players, npcs, etc)
 
   display.render();
@@ -46,6 +46,8 @@ let engine = new Engine(1000/30, update, render);
 let scale = 1; //Scale of the game canvas (1 will fill the full view)
 
 // START
+
+game.setup(300, [new Shape(0, 5, 5, "white", 10, 10), new Shape(0, 2, 2, "blue", 100, 100)])
 
 window.addEventListener("keydown", keyPress);
 window.addEventListener("resize", resize);

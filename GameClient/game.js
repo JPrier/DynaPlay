@@ -7,11 +7,15 @@ const Game = function() {
   this.update = function() {
     //console.log("Game Update");
   };
+  this.map = {};
 };
 Game.prototype = {
   constructor : Game,
-  setup: function() {
-    console.log("Game Setup")
+  setup: function(size, objects) {
+    this.map = {
+      objects: objects,
+      size: size
+    }
   }};
 
 // class Game {

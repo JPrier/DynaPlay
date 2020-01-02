@@ -12,7 +12,6 @@ let resize = function(event) {
                  document.documentElement.clientHeight,
                  scale);
   display.drawObject();
-  render();
 };
 
 let render = function() {
@@ -29,7 +28,6 @@ let update = function() {
   //TODO: if controller active change game state
 
   game.update();
-  resize();
 
   // TODO: add a condition to stop the engine (an end goal parameter)
 };
@@ -52,4 +50,5 @@ game.setup(300, [new Shape(0, 5, 5, "white", 10, 10), new Shape(0, 2, 2, "blue",
 window.addEventListener("keydown", keyPress);
 window.addEventListener("resize", resize);
 
+resize();
 engine.start();

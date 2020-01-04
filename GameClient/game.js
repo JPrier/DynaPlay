@@ -27,7 +27,10 @@ const Game = function() {
 
   this.controllerLeft = function() {
     if (this.player) {
+      // Linear
       this.player.loc_x -= 1;
+      // Tiles/grid
+      // this.player.loc_x += tile_size
     }
   };
 

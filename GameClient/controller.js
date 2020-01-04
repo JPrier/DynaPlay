@@ -16,13 +16,6 @@ const Controller = function(controls) {
       case 87: this.upPressed(); break;
     }
   };
-
-  // this.setDirectionsFalse = function() {
-  //   this.upPressed = false;
-  //   this.downPressed = false;
-  //   this.leftPressed = false;
-  //   this.rightPressed = false;
-  // }
 };
 
 Controller.prototype = {

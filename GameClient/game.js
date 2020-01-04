@@ -7,9 +7,48 @@ const Game = function() {
   this.map = {};
   this.player = undefined;
   this.npcs = [];
+
   this.update = function() {
     //TODO: update any objects that need to update on a time_step
+    for (let i = 0; i < this.map.objects.length; i++) {
+      this.map.objects[i].loc_x = this.map.objects[i].loc_x + 1;
+      this.map.objects[i].loc_y = this.map.objects[i].loc_y + 1;
+    }
+
+    if (this.player) {
+      //this.player update
+    }
+
+    for (let i = 0; i < this.npcs.length; i++) {
+      this.npcs[i].loc_x = this.npcs[i].loc_x + (Math.floor(Math.random() * 2) * (Math.random() < 0.5 ? -1 : 1));
+      this.npcs[i].loc_y = this.npcs[i].loc_y + (Math.floor(Math.random() * 2)* (Math.random() < 0.5 ? -1 : 1));
+    }
   };
+
+  this.controllerLeft = function() {
+    if (this.player) {
+      this.player.loc_x -= 1;
+    }
+  };
+
+  this.controllerRight = function() {
+    if (this.player) {
+      this.player.loc_x += 1;
+    }
+  };
+
+  this.controllerUp = function() {
+    if (this.player) {
+      this.player.loc_y -= 1;
+    }
+  };
+
+  this.controllerDown = function() {
+    if (this.player) {
+      this.player.loc_y += 1;
+    }
+  };
+
 };
 Game.prototype = {
   constructor : Game,

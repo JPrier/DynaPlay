@@ -9,6 +9,8 @@ const Display = function(canvas, color) {
   this.buffer.fillRect(0, 0, this.buffer.canvas.width, this.buffer.canvas.height);
 
   this.drawMap = function(map) {
+    this.buffer.fillStyle = color;
+    this.buffer.fillRect(0, 0, this.buffer.canvas.width, this.buffer.canvas.height);
     for (let i = map.objects.length - 1; i > -1; -- i) {
       this.drawObject(map.objects[i])
     }

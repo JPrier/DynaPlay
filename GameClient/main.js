@@ -3,8 +3,8 @@
 /// FUNCTIONS
 
 let keyPress = function(event) {
-  //controller.keyPress(event.type, event.keyCode);
-  game.map.objects[0].color == "white" ?  game.map.objects[0].color = "blue" : game.map.objects[0].color = "white";
+  controller.keyPress(event.type, event.keyCode);
+  //game.map.objects[0].color == "white" ?  game.map.objects[0].color = "blue" : game.map.objects[0].color = "white";
 };
 
 let resize = function(event) {
@@ -19,6 +19,12 @@ let render = function() {
   //TODO draw game map (static objects in map array)
   display.drawMap(game.map);
   //TODO draw objects (players, npcs, etc)
+  if (game.player) {
+    display.drawObject(game.player);
+  }
+  for (let i = 0; i < game.npcs.length; i++) {
+    display.drawObject(game.npcs[i]);
+  }
 
   display.render();
 };
@@ -34,11 +40,15 @@ let update = function() {
 
 /// OBJECTS
 
-//let controller = new Controller();
 let game = new Game();
 let display = new Display(document.querySelector("canvas"), "black");
 let engine = new Engine(1000/30, update, render);
 
+let controls = [function() {game.controllerUp()},
+                function() {game.controllerDown()},
+                function() {game.controllerLeft()},
+                function() {game.controllerRight()}];
+let controller = new Controller(controls);
 /// INIT
 
 let scale = 1; //Scale of the game canvas (1 will fill the full view)
@@ -46,7 +56,9 @@ let scale = 1; //Scale of the game canvas (1 will fill the full view)
 // START
 
 game.setup(300, [new Shape(0, 10, 10, 50, 50, "white"),
-                 new Shape(0, 100, 100, 20, 20, "blue")])
+                 new Shape(0, 100, 100, 20, 20, "blue")],
+                 new Shape(0, 20, 20, 30, 30, "green"),
+                 [new Shape(0, 50, 50, 30, 30, "yellow")]);
 
 window.addEventListener("keydown", keyPress);
 window.addEventListener("resize", resize);

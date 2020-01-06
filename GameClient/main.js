@@ -39,29 +39,35 @@ let update = function() {
 };
 
 /// OBJECTS
+const mainSetup = function(gameSettings) {
+  //INIT
 
-let game = new Game();
-let display = new Display(document.querySelector("canvas"), "black");
-let engine = new Engine(1000/30, update, render);
+  game = new Game(gameSettings);
+  display = new Display(document.querySelector("canvas"), "black");
+  engine = new Engine(1000/30, update, render);
 
-let controls = [function() {game.controllerUp()},
-                function() {game.controllerDown()},
-                function() {game.controllerLeft()},
-                function() {game.controllerRight()}];
-let controller = new Controller(controls);
-/// INIT
+  let controls = [function() {game.controllerUp()},
+                  function() {game.controllerDown()},
+                  function() {game.controllerLeft()},
+                  function() {game.controllerRight()}];
+  controller = new Controller(controls);
 
+  // START
+
+  game.setup(300, [new Shape(0, 10, 10, 50, 50, "white"),
+                   new Shape(0, 100, 100, 20, 20, "blue")],
+                   new Shape(0, 20, 20, 30, 30, "green"),
+                   [new Shape(0, 50, 50, 30, 30, "yellow")]);
+
+  window.addEventListener("keydown", keyPress);
+  window.addEventListener("resize", resize);
+
+  resize();
+  engine.start();
+}
+
+let game = undefined;
+let display = undefined;
+let engine = undefined;
+let controller = undefined;
 let scale = 1; //Scale of the game canvas (1 will fill the full view)
-
-// START
-
-game.setup(300, [new Shape(0, 10, 10, 50, 50, "white"),
-                 new Shape(0, 100, 100, 20, 20, "blue")],
-                 new Shape(0, 20, 20, 30, 30, "green"),
-                 [new Shape(0, 50, 50, 30, 30, "yellow")]);
-
-window.addEventListener("keydown", keyPress);
-window.addEventListener("resize", resize);
-
-resize();
-engine.start();

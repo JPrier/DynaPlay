@@ -1,12 +1,20 @@
 // Contains all logic for parameters (indiviual parameter logic may be contained in seperate module)
 
-//let gameSettings = require('./gameSettings.js');
-
-const Game = function() {
-  this.settings = 0;//gameSettings.getGameState();
+const Game = function(gameSettings) {
+  this.settings = gameSettings;
   this.map = {};
   this.player = undefined;
   this.npcs = [];
+
+  //TODO: Set these based off of game settings
+  this.setup = function(size, objects, player, npcs) {
+    this.map = {
+      objects: objects,
+      size: size
+    }
+    this.player = player;
+    this.npcs = npcs;
+  }
 
   this.update = function() {
     //TODO: update any objects that need to update on a time_step
@@ -56,11 +64,6 @@ const Game = function() {
 Game.prototype = {
   constructor : Game,
   setup: function(size, objects, player, npcs) {
-    this.map = {
-      objects: objects,
-      size: size
-    }
-    this.player = player;
-    this.npcs = npcs;
+    Game.setup(size, objects, player, npcs);
   }
 };

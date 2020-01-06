@@ -1,0 +1,20 @@
+{
+  "settings": {
+    "nameList" : ["worldType", "movementMethod", "playerVS", "NPCs", "NPCBehavior", "NPCDifficulty", "scoring", "movement", "playerColor", "backgroundColor", "NPCColor", "itemColor", "endGoal"],
+    "values": {
+        "worldType": [[-1,0,1,2,3], ["Grid","Hex","Linear","Platformer"]],
+        "movementMethod": [[-1,0,1], ["None","Button/Keyboard","Mouse or Drag(TouchScreen)"]],
+        "playerVS": [[-1,0,1], ["None","PvP","PvE"]],
+        "NPCs": [0,99],
+        "NPCBehavior": [[0,1,2,3], ["Attack Player","Follow Player","Attack other NPCs","Collect Items"]],
+        "NPCDifficulty": [[-1,0,1,2], ["Easy","Medium","Hard"]],
+        "scoring": [[0,1,2,3], ["Collect Items","Kill other players","Kill NPCs","Surive (time)"]],
+        "movement": [[-1,0], ["Linear","Turn Based"]],
+        "playerColor": "white",
+        "backgroundColor": "black",
+        "NPCColor": "blue",
+        "itemColor": "green",
+        "endGoal": [[-1,0,1,2], ["Hit point amount","Die","Last Alive"]]
+      }
+    }
+  }

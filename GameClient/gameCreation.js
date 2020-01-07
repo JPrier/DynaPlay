@@ -16,44 +16,51 @@ let settings = {
   "endGoal": [[0,1,2], ["Hit point amount","Die","Last Alive"]]
 }
 
-//TODO: set settings off of html inputs (drop downs, text, etc)
-
-let gameSettings = [];
-
 //Set Body programatically using the gameParams
+
+//TODO: condense and clean up the string creation
 let bodyInner = "";
 let keys = Object.keys(settings);
 for (let i=0;i<keys.length;i++) {
    let values = settings[keys[i]];
    if (values.length > 1 && values[0].length > 1) {
-     bodyInner += "<div><h3>" + keys[i] + "</h3><select>";
+     bodyInner += "<div><h3>" + keys[i] + "</h3><select id= " + keys[i] + ">";
      for (let j=0;j<values[0].length;j++){
        bodyInner += "<option value=" + values[0][j] + ">" + values[1][j] + "</option>";
      }
      bodyInner += "</select></div>";
    } else {
-      bodyInner += "<div><h3>" + keys[i] + "</h3><select>";
+      bodyInner += "<div><h3>" + keys[i] + "</h3><select id= " + keys[i] + ">";
       if (keys[i] == "NPCs") {
         for (let n=values[0];n<=values[1];n++) {
           bodyInner += "<option value=" + n + ">" + n + "</option>";
         }
+      } else {
+        bodyInner += "<option value=" + values + ">" + values + "</option>";
       }
       bodyInner += "</select></div>";
    }
 }
 
-bodyInner += "<div><button onclick=validateParams()>Start Game</button></div>" 
+bodyInner += "<div><button onclick=validateParams()>Start Game</button></div>"
 
 document.body.innerHTML = bodyInner;
 
 let validateParams = function() {
   //TODO: go through selected options from <select> objects and check if they are valid
-  startGame(gameSettings);
+  for (let i=0; i<keys.length; i++) {
+    let element = document.getElementById(keys[i]);
+    if (element) {
+      console.log(keys[i]);
+      settings[keys[i]] = element.options[element.selectedIndex].value;
+    }
+  }
+  startGame(settings);
 }
 
-let startGame = function(gameSettings) {
+let startGame = function(settings) {
   document.body.innerHTML = '<canvas></canvas>';
-  mainSetup(gameSettings);
+  mainSetup(settings);
 }
 
 //startGame(gameSettings);

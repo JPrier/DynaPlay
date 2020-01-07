@@ -41,7 +41,7 @@ let update = function() {
 /// OBJECTS
 const mainSetup = function(gameSettings) {
   //INIT
-
+  console.log(gameSettings);
   game = new Game(gameSettings);
   display = new Display(document.querySelector("canvas"), "black");
   engine = new Engine(1000/30, update, render);
@@ -54,10 +54,7 @@ const mainSetup = function(gameSettings) {
 
   // START
 
-  game.setup(300, [new Shape(0, 10, 10, 50, 50, "white"),
-                   new Shape(0, 100, 100, 20, 20, "blue")],
-                   new Shape(0, 20, 20, 30, 30, "green"),
-                   [new Shape(0, 50, 50, 30, 30, "yellow")]);
+  game.setup(300);
 
   window.addEventListener("keydown", keyPress);
   window.addEventListener("resize", resize);

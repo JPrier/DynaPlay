@@ -23,7 +23,7 @@ let render = function() {
     display.drawObject(game.player.shape);
   }
   for (let i = 0; i < game.npcs.length; i++) {
-    display.drawObject(game.npcs[i]);
+    display.drawObject(game.npcs[i].shape);
   }
 
   display.render();

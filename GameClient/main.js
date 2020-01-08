@@ -11,7 +11,7 @@ let resize = function(event) {
   display.resize(document.documentElement.clientWidth,
                  document.documentElement.clientHeight,
                  scale);
-  //display.drawObject();
+  //game.updateSize(display.context.canvas.width/scale, display.context.canvas.height/scale);
 };
 
 let render = function() {
@@ -54,7 +54,8 @@ const mainSetup = function(gameSettings) {
 
   // START
 
-  game.setup(300);
+  game.setup();
+  game.updateSize(270, 130);
 
   window.addEventListener("keydown", keyPress);
   window.addEventListener("resize", resize);

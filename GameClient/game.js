@@ -10,25 +10,35 @@ const Game = function(gameSettings) {
   this.player = undefined;
   this.npcs = [];
   this.tileSize = 10;
+  this.sizeX = 300;
+  this.sizeY = 300;
 
   //TODO: Set these based off of game settings
-  this.setup = function(size) {
+  this.setup = function() {
     this.map = {
-      objects: [],
-      size: size
+      objects: [new Shape(0, this.sizeX, this.sizeY, 30, 15, "yellow", false, false)]
     }
     this.player = new Player(0, 30, 30, 30, 20, this.settings["playerColor"], true);
     this.npcs = [];
-    for (let i=0; i<=parseInt(this.settings["NPCs"]);i++) {
-      this.npcs.push(new NPC(0, random(this.map.size), random(this.map.size), 30, 20, this.settings["NPCColor"], true, true));
+    for (let i=0; i<parseInt(this.settings["NPCs"]);i++) {
+      this.npcs.push(new NPC(0, random(this.sizeX), random(this.sizeY), 30, 20, this.settings["NPCColor"], true, true));
     }
   }
 
+  this.updateSize = function(x, y) {
+    this.sizeX = x;
+    this.sizeY = y;
+  }
+
   this.update = function() {
+
+    console.log(this.sizeX + ", " + this.sizeY);
+    console.log(this.player.shape.loc_x + ", " + this.player.shape.loc_y);
+
     //TODO: update any objects that need to update on a time_step
     for (let i = 0; i < this.map.objects.length; i++) {
-      this.map.objects[i].loc_x = this.map.objects[i].loc_x + 1;
-      this.map.objects[i].loc_y = this.map.objects[i].loc_y + 1;
+      // this.map.objects[i].loc_x = this.map.objects[i].loc_x + 1;
+      // this.map.objects[i].loc_y = this.map.objects[i].loc_y + 1;
       // if (this.collides(this.map.objects[i])) {
       //   this.map.objects[i].loc_x = this.map.objects[i].loc_x - 1;
       //   this.map.objects[i].loc_y = this.map.objects[i].loc_y - 1;
@@ -128,12 +138,10 @@ const Game = function(gameSettings) {
   }
 
   this.collidesWithCanvas = function(object) {
-    let xDiff = Math.abs(object.shape.loc_x - this.size);
-    let yDiff = Math.abs(object.shape.loc_y- this.size);
     if (object.shape.loc_x < 0 ||
         object.shape.loc_y < 0 ||
-        xDiff > object.shape.width ||
-        yDiff > object.shape.height) {
+        object.shape.loc_x > this.sizeX ||
+        object.shape.loc_y > this.sizeY) {
           return true;
         }
   }

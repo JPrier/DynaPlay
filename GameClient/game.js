@@ -120,7 +120,7 @@ const Game = function(gameSettings) {
         return true;
       }
     }
-  }
+  };
 
   this.collidesWithNPCs = function(object, j) {
     if (object.shape.collidesWithNPCs) {
@@ -135,7 +135,7 @@ const Game = function(gameSettings) {
         }
       }
     }
-  }
+  };
 
   this.collidesWithCanvas = function(object) {
     if (object.shape.loc_x < 0 ||
@@ -144,13 +144,13 @@ const Game = function(gameSettings) {
         object.shape.loc_y > this.sizeY) {
           return true;
         }
-  }
+  };
 
   this.collides = function(object, npcIndex) {
     return (this.collidesWithNPCs(object, npcIndex) ||
             this.collidesWithPlayer(object) ||
             this.collidesWithCanvas(object));
-  }
+  };
 
 };
 Game.prototype = {

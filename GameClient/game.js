@@ -32,9 +32,6 @@ const Game = function(gameSettings) {
 
   this.update = function() {
 
-    console.log(this.sizeX + ", " + this.sizeY);
-    console.log(this.player.shape.loc_x + ", " + this.player.shape.loc_y);
-
     //TODO: update any objects that need to update on a time_step
     for (let i = 0; i < this.map.objects.length; i++) {
       // this.map.objects[i].loc_x = this.map.objects[i].loc_x + 1;
@@ -140,8 +137,8 @@ const Game = function(gameSettings) {
   this.collidesWithCanvas = function(object) {
     if (object.shape.loc_x < 0 ||
         object.shape.loc_y < 0 ||
-        object.shape.loc_x > this.sizeX ||
-        object.shape.loc_y > this.sizeY) {
+        object.shape.loc_x > this.sizeX - object.shape.width ||
+        object.shape.loc_y > this.sizeY - object.shape.height) {
           return true;
         }
   };

@@ -4,30 +4,52 @@ let random = function(n) {
   return Math.floor(Math.random() * n)
 }
 
+let getRandomColor = function() {
+  var letters = '0123456789ABCDEF';
+  var color = '#';
+  for (var i = 0; i < 6; i++) {
+    color += letters[Math.floor(Math.random() * 16)];
+  }
+  return color;
+};
+
 const Game = function(gameSettings) {
   this.settings = gameSettings;
   this.map = {};
   this.player = undefined;
   this.npcs = [];
-  this.tileSize = 10;
+  this.tileSize = 5;
   this.sizeX = 300;
   this.sizeY = 300;
 
   //TODO: Set these based off of game settings
   this.setup = function() {
     this.map = {
-      objects: [new Shape(0, this.sizeX, this.sizeY, 30, 15, "yellow", false, false)]
+      objects: []
     }
-    this.player = new Player(0, 30, 30, 30, 20, this.settings["playerColor"], true);
+    this.player = new Player(0, 30, 30, 20, 20, this.settings["playerColor"], true);
     this.npcs = [];
     for (let i=0; i<parseInt(this.settings["NPCs"]);i++) {
       this.npcs.push(new NPC(0, random(this.sizeX), random(this.sizeY), 30, 20, this.settings["NPCColor"], true, true));
     }
   }
 
-  this.createWorld() {
+  this.createWorld = function() {
     // TODO: implement a procedural generation that can be as modular as possible
     // https://www.gamasutra.com/view/feature/170049/how_to_make_insane_procedural_.php?page=3
+
+    for (let i = 0; i <= this.sizeX; i++) {
+      for (let j = 0; j <= this.sizeY; j++) {
+        this.map.objects.push(
+          new StaticObject(0,
+                           i*this.tileSize,
+                           j*this.tileSize,
+                           this.tileSize,
+                           this.tileSize,
+                           getRandomColor(),
+                           true, true));
+      }
+    }
   }
 
   this.updateSize = function(x, y) {
@@ -157,8 +179,7 @@ const Game = function(gameSettings) {
 };
 Game.prototype = {
   constructor : Game,
-  setup: function(size) {
-    Game.setup(size);
-    Game.createWorld();
+  setup: function() {
+    Game.setup();
   }
 };

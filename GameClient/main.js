@@ -53,13 +53,16 @@ const mainSetup = function(gameSettings) {
 
   // START
 
-  game.setup();
-  game.updateSize(270, 130);
-
   window.addEventListener("keydown", keyPress);
   window.addEventListener("resize", resize);
 
+  game.setup();
+  display.setCanvasSize(300, 300);
+
   resize();
+
+  game.createWorld();
+
   engine.start();
 }
 

@@ -59,7 +59,7 @@ let validateParams = function() {
 }
 
 let startGame = function(settings) {
-  document.body.innerHTML = '<canvas></canvas>';
+  document.body.innerHTML = '<canvas width="300" height="300"></canvas>';
   mainSetup(settings);
 }
 

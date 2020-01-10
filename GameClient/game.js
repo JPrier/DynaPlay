@@ -21,6 +21,7 @@ const Game = function(gameSettings) {
   this.tileSize = 5;
   this.sizeX = 300;
   this.sizeY = 300;
+  this.mapGenerator = new MapGenerator(.5);
 
   //TODO: Set these based off of game settings
   this.setup = function() {
@@ -38,28 +39,30 @@ const Game = function(gameSettings) {
     // TODO: implement a procedural generation that can be as modular as possible
     // https://www.gamasutra.com/view/feature/170049/how_to_make_insane_procedural_.php?page=3
 
-    noise.seed(Math.random());
+    this.map.objects = this.mapGenerator.generateMap(this.sizeX, this.sizeY, this.tileSize);
 
-    for (let i = 0; i <= this.sizeX; i++) {
-      for (let j = 0; j <= this.sizeY; j++) {
-        // Get a value from perlin noise
-        let value = noise.simplex2(i/100, j/100);
-        // Decide whether the tile will be filled in
-        if (value > .4) {
-          this.map.objects.push(
-            new StaticObject(
-              0,
-              i*this.tileSize,
-              j*this.tileSize,
-              this.tileSize,
-              this.tileSize,
-              '#' + (Math.floor((Math.abs(value)*1000000))).toString(16).padStart(6, '0'),
-              false, false
-            )
-          );
-        }
-      }
-    }
+    //noise.seed(Math.random());
+
+    // for (let i = 0; i <= this.sizeX; i++) {
+    //   for (let j = 0; j <= this.sizeY; j++) {
+    //     // Get a value from perlin noise
+    //     let value = noise.simplex2(i/100, j/100);
+    //     // Decide whether the tile will be filled in
+    //     if (value > .4) {
+    //       this.map.objects.push(
+    //         new StaticObject(
+    //           0,
+    //           i*this.tileSize,
+    //           j*this.tileSize,
+    //           this.tileSize,
+    //           this.tileSize,
+    //           '#' + (Math.floor((Math.abs(value)*1000000))).toString(16).padStart(6, '0'),
+    //           false, false
+    //         )
+    //       );
+    //     }
+    //   }
+    // }
   }
 
   this.updateSize = function(x, y) {

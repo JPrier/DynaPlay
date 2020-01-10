@@ -25,6 +25,11 @@ const Game = function(gameSettings) {
     }
   }
 
+  this.createWorld() {
+    // TODO: implement a procedural generation that can be as modular as possible
+    // https://www.gamasutra.com/view/feature/170049/how_to_make_insane_procedural_.php?page=3
+  }
+
   this.updateSize = function(x, y) {
     this.sizeX = x;
     this.sizeY = y;
@@ -154,5 +159,6 @@ Game.prototype = {
   constructor : Game,
   setup: function(size) {
     Game.setup(size);
+    Game.createWorld();
   }
 };

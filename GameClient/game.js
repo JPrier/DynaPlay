@@ -38,16 +38,26 @@ const Game = function(gameSettings) {
     // TODO: implement a procedural generation that can be as modular as possible
     // https://www.gamasutra.com/view/feature/170049/how_to_make_insane_procedural_.php?page=3
 
+    noise.seed(Math.random());
+
     for (let i = 0; i <= this.sizeX; i++) {
       for (let j = 0; j <= this.sizeY; j++) {
-        this.map.objects.push(
-          new StaticObject(0,
-                           i*this.tileSize,
-                           j*this.tileSize,
-                           this.tileSize,
-                           this.tileSize,
-                           getRandomColor(),
-                           true, true));
+        // Get a value from perlin noise
+        let value = noise.simplex2(i/100, j/100);
+        // Decide whether the tile will be filled in
+        if (value > .4) {
+          this.map.objects.push(
+            new StaticObject(
+              0,
+              i*this.tileSize,
+              j*this.tileSize,
+              this.tileSize,
+              this.tileSize,
+              '#' + (Math.floor((Math.abs(value)*1000000))).toString(16).padStart(6, '0'),
+              false, false
+            )
+          );
+        }
       }
     }
   }

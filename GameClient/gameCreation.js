@@ -13,7 +13,9 @@ let settings = {
   "backgroundColor": "black",
   "NPCColor": "blue",
   "itemColor": "green",
-  "endGoal": [[0,1,2], ["Hit point amount","Die","Last Alive"]]
+  "endGoal": [[0,1,2], ["Hit point amount","Die","Last Alive"]],
+  "fillPercent": [0, 100],
+  "randomMethod": [[0,1], ["Random", "Perlin Noise"]]
 }
 
 //Set Body programatically using the gameParams
@@ -31,9 +33,10 @@ for (let i=0;i<keys.length;i++) {
      bodyInner += "</select></div>";
    } else {
       bodyInner += "<div><h3>" + keys[i] + "</h3><select id= " + keys[i] + ">";
-      if (keys[i] == "NPCs") {
+      if (keys[i] == "NPCs" || keys[i] == "fillPercent") {
         for (let n=values[0];n<=values[1];n++) {
-          bodyInner += "<option value=" + n + ">" + n + "</option>";
+          let num = keys[i] == "fillPercent" ? n/100 : n;
+          bodyInner += "<option value=" + num + ">" + num + "</option>";
         }
       } else {
         bodyInner += "<option value=" + values + ">" + values + "</option>";

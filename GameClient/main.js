@@ -16,6 +16,8 @@ let resize = function(event) {
 
 let render = function() {
 
+  // game.mapGenerator.smoothMap(game.map.objects, game.sizeX, game.sizeY);
+
   //TODO draw game map (static objects in map array)
   display.drawMap(game.map);
   //TODO draw objects (players, npcs, etc)
@@ -38,6 +40,10 @@ let update = function() {
   // TODO: add a condition to stop the engine (an end goal parameter)
 };
 
+let createNewWorld = function() {
+  game.createWorld();
+}
+
 /// OBJECTS
 const mainSetup = function(gameSettings) {
   //INIT
@@ -55,6 +61,7 @@ const mainSetup = function(gameSettings) {
 
   window.addEventListener("keydown", keyPress);
   window.addEventListener("resize", resize);
+  window.addEventListener("click", createNewWorld);
 
   game.setup();
   display.setCanvasSize(300, 300);

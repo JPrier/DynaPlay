@@ -21,7 +21,8 @@ const Game = function(gameSettings) {
   this.tileSize = 5;
   this.sizeX = 300;
   this.sizeY = 300;
-  this.mapGenerator = new MapGenerator(.5);
+  this.mapGenerator = new MapGenerator(this.settings["fillPercent"]);
+    //.3 for perlin, .5 for random
 
   //TODO: Set these based off of game settings
   this.setup = function() {
@@ -38,31 +39,9 @@ const Game = function(gameSettings) {
   this.createWorld = function() {
     // TODO: implement a procedural generation that can be as modular as possible
     // https://www.gamasutra.com/view/feature/170049/how_to_make_insane_procedural_.php?page=3
+    // https://www.youtube.com/watch?v=v7yyZZjF1z4
 
-    this.map.objects = this.mapGenerator.generateMap(this.sizeX, this.sizeY, this.tileSize);
-
-    //noise.seed(Math.random());
-
-    // for (let i = 0; i <= this.sizeX; i++) {
-    //   for (let j = 0; j <= this.sizeY; j++) {
-    //     // Get a value from perlin noise
-    //     let value = noise.simplex2(i/100, j/100);
-    //     // Decide whether the tile will be filled in
-    //     if (value > .4) {
-    //       this.map.objects.push(
-    //         new StaticObject(
-    //           0,
-    //           i*this.tileSize,
-    //           j*this.tileSize,
-    //           this.tileSize,
-    //           this.tileSize,
-    //           '#' + (Math.floor((Math.abs(value)*1000000))).toString(16).padStart(6, '0'),
-    //           false, false
-    //         )
-    //       );
-    //     }
-    //   }
-    // }
+    this.map.objects = this.mapGenerator.generateMap(this.settings["randomMethod"] == 1, this.sizeX, this.sizeY, this.tileSize);
   }
 
   this.updateSize = function(x, y) {
@@ -71,16 +50,6 @@ const Game = function(gameSettings) {
   }
 
   this.update = function() {
-
-    //TODO: update any objects that need to update on a time_step
-    for (let i = 0; i < this.map.objects.length; i++) {
-      // this.map.objects[i].loc_x = this.map.objects[i].loc_x + 1;
-      // this.map.objects[i].loc_y = this.map.objects[i].loc_y + 1;
-      // if (this.collides(this.map.objects[i])) {
-      //   this.map.objects[i].loc_x = this.map.objects[i].loc_x - 1;
-      //   this.map.objects[i].loc_y = this.map.objects[i].loc_y - 1;
-      // }
-    }
 
     if (this.player) {
       //TODO: add updates with velocity and gravity

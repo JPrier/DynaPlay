@@ -11,7 +11,7 @@ let resize = function(event) {
   display.resize(document.documentElement.clientWidth,
                  document.documentElement.clientHeight,
                  scale);
-  game.updateSize(display.buffer.canvas.width, display.buffer.canvas.height);
+  //game.updateSize(display.buffer.canvas.width, display.buffer.canvas.height);
 };
 
 let render = function() {
@@ -64,7 +64,7 @@ const mainSetup = function(gameSettings) {
   window.addEventListener("click", createNewWorld);
 
   game.setup();
-  display.setCanvasSize(300, 300);
+  display.setCanvasSize(game.sizeX, game.sizeY);
 
   resize();
 

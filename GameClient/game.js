@@ -19,10 +19,12 @@ const Game = function(gameSettings) {
   this.player = undefined;
   this.npcs = [];
   this.tileSize = 5;
-  this.sizeX = 300;
-  this.sizeY = 300;
+  this.sizeX = 500;
+  this.sizeY = 500;
   this.mapGenerator = new MapGenerator(this.settings["fillPercent"]);
     //.3 for perlin, .5 for random
+  this.gravity = .5;
+  this.velocityChange = 5;
 
   //TODO: Set these based off of game settings
   this.setup = function() {
@@ -52,7 +54,19 @@ const Game = function(gameSettings) {
   this.update = function() {
 
     if (this.player) {
-      //TODO: add updates with velocity and gravity
+      //TODO: move collision here to avoid getting the player stuck from velocity
+      this.player.shape.loc_x += this.movementAmount() * this.player.velocityX;
+      this.player.shape.loc_y += this.movementAmount() * this.player.velocityY;
+
+      this.player.velocityX -= this.player.weight * this.gravity;
+      this.player.velocityY -= this.player.weight * this.gravity;
+
+      if (this.player.velocityX < 0) {
+        this.player.velocityX = 0;
+      }
+      if (this.player.velocityY < 0) {
+        this.player.velocityY = 0;
+      }
     }
 
     for (let i = 0; i < this.npcs.length; i++) {
@@ -70,8 +84,10 @@ const Game = function(gameSettings) {
   this.controllerLeft = function() {
     if (this.player) {
       this.player.shape.loc_x -= this.movementAmount();
+      this.player.velocityX = -1*this.velocityChange;
       if (this.collides(this.player, -1)) {
         this.player.shape.loc_x += this.movementAmount();
+        this.player.velocityX = 0;
       }
     }
   };
@@ -79,9 +95,11 @@ const Game = function(gameSettings) {
   this.controllerRight = function() {
     if (this.player) {
       this.player.shape.loc_x += this.movementAmount();
+      this.player.velocityX = this.velocityChange;
     }
     if (this.collides(this.player, -1)) {
       this.player.shape.loc_x -= this.movementAmount();
+      this.player.velocityX = 0;
     }
   };
 
@@ -90,12 +108,14 @@ const Game = function(gameSettings) {
       if (this.settings["worldType"] == "3") {
         //JUMP
         this.player.shape.loc_y -= 2;
-        //TODO: add a velocity that should be updated on each frame
+        this.player.velocityY = -2*this.velocityChange;
       } else {
         this.player.shape.loc_y -= this.movementAmount();
-        if (this.collides(this.player, -1)) {
-          this.player.shape.loc_y += this.movementAmount();
-        }
+        this.player.velocityY = -1*this.velocityChange;
+      }
+      if (this.collides(this.player, -1)) {
+        this.player.shape.loc_y += this.movementAmount();
+        this.player.velocityY = 0;
       }
     }
   };
@@ -103,8 +123,10 @@ const Game = function(gameSettings) {
   this.controllerDown = function() {
     if (this.player) {
       this.player.shape.loc_y += this.movementAmount();
+      this.player.velocityY = this.velocityChange;
       if (this.collides(this.player, -1)) {
         this.player.shape.loc_y -= this.movementAmount();
+        this.player.velocityY = 0;
       }
     }
   };

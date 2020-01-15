@@ -42,6 +42,8 @@ const Game = function(gameSettings) {
     // TODO: implement a procedural generation that can be as modular as possible
     // https://www.gamasutra.com/view/feature/170049/how_to_make_insane_procedural_.php?page=3
     // https://www.youtube.com/watch?v=v7yyZZjF1z4
+    // http://digitalcommons.calpoly.edu/cgi/viewcontent.cgi?article=1156&context=cscsp
+    // https://www.polygon.com/2013/10/21/4862210/spelunky-randomly-generated-levels-explained
 
     this.map.objects = this.mapGenerator.generateMap(this.settings["randomMethod"] == 1, this.sizeX, this.sizeY, this.tileSize);
   }

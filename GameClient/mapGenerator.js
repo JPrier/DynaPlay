@@ -3,28 +3,47 @@
 
 const MapGenerator = function(fillPercent) {
   this.fillPercent = fillPercent;
+  this.smoothingIters = 1;
 
 
-  this.generateMap = function(usePerlin, sizeX, sizeY, tileSize) {
-    let map = this.randomlyFilledMap(usePerlin, sizeX, sizeY, tileSize);
+  this.generateMap = function(randomType, sizeX, sizeY, tileSize) {
+    let map = this.randomlyFilledMap(randomType, sizeX, sizeY, tileSize);
 
-    for (let i = 0; i < 5; i++) {
+    for (let i = 0; i < this.smoothingIters; i++) {
       map = this.smoothMap(map, sizeX, sizeY);
     }
     return map;
   };
 
-  this.randomlyFilledMap = function(usePerlin, sizeX, sizeY, tileSize) {
+  this.randomlyFilledMap = function(randomType, sizeX, sizeY, tileSize) {
     let map = [];
+    let seed = Math.random() * Math.random() * 100;
+    noise.seed(seed);
+    bufferedCubicNoise = new BufferedCubicNoise(sizeX, sizeY);
     for (let i = 0; i <= sizeX; i++) {
       for (let j = 0; j <= sizeY; j++) {
         let objectExists = false;
-        if (usePerlin) {
-          noise.seed(Math.random());
-          objectExists = Math.abs(noise.simplex2(i/100, j/100)) < this.fillPercent;
-
-        } else{
-          objectExists = (Math.abs(Math.random()) < this.fillPercent);
+        switch (parseInt(randomType)) {
+          case 0:
+            //perlin
+            objectExists = Math.abs(noise.perlin2(i/100, j/100)) < this.fillPercent;
+            break;
+          case 1:
+            //simplex
+            objectExists = Math.abs(noise.simplex2(i/100, j/100)) < this.fillPercent;
+            break;
+          case 2:
+            //random
+            objectExists = (Math.abs(Math.random()) < this.fillPercent);
+            break;
+          case 3:
+            //cubic
+            objectExists = cubicNoiseSample2(cubicNoiseConfig(seed), i, j) < this.fillPercent;
+            break;
+          case 4:
+            //BufferedCubic
+            objectExists = bufferedCubicNoise.sample(i, j) < this.fillPercent;
+            break;
         }
         map.push(
           new StaticObject(
@@ -91,6 +110,50 @@ const MapGenerator = function(fillPercent) {
       }
     }
     return objectCount;
+  };
+
+  this.connectMap = function(map, sizeX, sizeY) {
+    let regions = [];
+    let currentRegion = 0;
+    for (let i = 0; i < sizeX; i++) {
+      for (let j = 0; j < sizeY; j++) {
+        if (map[i*sizeX+j].color == "black" && map[i*sizeX+j].region == undefined) {
+          console.log(i + ", " + j);
+          regions[currentRegion] = [[i,j]];
+          //map[i*sizeX+j].color = '#' + (Math.floor((Math.abs(currentRegion)*1000000))).toString(16).padStart(6, '0');
+          map[i*sizeX+j].region = currentRegion;
+
+          regionObjectStack = this.getDirectionalNeighbors(map, i, j, sizeX, sizeY, color, []);
+
+          while (regionObjectStack.length > 0) {
+            coords = regionObjectStack.pop();
+            x = coords[0]; y = coords[1];
+            regions[currentRegion] = [[x,y]];
+            //map[x*sizeX+y].color = '#' + (Math.floor((Math.abs(currentRegion)*1000000))).toString(16).padStart(6, '0');
+            map[x*sizeX+y].region = currentRegion;
+            regionObjectStack = this.getDirectionalNeighbors(map, x, y, sizeX, sizeY, color, regionObjectStack);
+          }
+          currentRegion++;
+        }
+      }
+    }
+    return map;
+  };
+
+  this.getDirectionalNeighbors = function(map, x, y, sizeX, sizeY, color, list) {
+    if (x-1 > sizeX && map[(x-1)*sizeX+y].color == "black") {
+      list.push([x-1,y]);
+    }
+    if (x+1 < sizeX && map[(x+1)*sizeX+y].color == "black") {
+      list.push([x+1,y]);
+    }
+    if (y-1 > sizeY && map[x*sizeX+(y-1)].color == "black") {
+      list.push([x,y-1]);
+    }
+    if (y+1 < sizeY && map[x*sizeX+(y+1)].color == "black") {
+      list.push([x,y+1]);
+    }
+    return list;
   };
 };
 

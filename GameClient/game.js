@@ -22,7 +22,7 @@ const Game = function(gameSettings) {
   this.sizeX = 500;
   this.sizeY = 500;
   this.mapGenerator = new MapGenerator(this.settings["fillPercent"]);
-    //.3 for perlin, .5 for random
+    //.2 for perlin, .3 for simplex, .5 for random
   this.gravity = .5;
   this.velocityChange = 5;
 
@@ -45,7 +45,15 @@ const Game = function(gameSettings) {
     // http://digitalcommons.calpoly.edu/cgi/viewcontent.cgi?article=1156&context=cscsp
     // https://www.polygon.com/2013/10/21/4862210/spelunky-randomly-generated-levels-explained
 
-    this.map.objects = this.mapGenerator.generateMap(this.settings["randomMethod"] == 1, this.sizeX, this.sizeY, this.tileSize);
+    this.map.objects = this.mapGenerator.generateMap(this.settings["randomMethod"], this.sizeX, this.sizeY, this.tileSize);
+  }
+
+  this.smoothWorld = function() {
+    this.map.objects = this.mapGenerator.smoothMap(this.map.objects, this.sizeX, this.sizeY);
+  }
+
+  this.connectWorld = function() {
+    this.map.objects = this.mapGenerator.connectMap(this.map.objects, this.sizeX, this.sizeY);
   }
 
   this.updateSize = function(x, y) {

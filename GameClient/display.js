@@ -1,7 +1,9 @@
 // Carries all the logic for drawing and rendering visuals
 
 const Display = function(canvas, color) {
-  this.buffer = document.createElement("canvas").getContext("2d");
+  this.canvas = document.createElement("canvas");
+  this.buffer = this.canvas.getContext("2d");
+  this.contextCanvas = canvas;
   this.context = canvas.getContext("2d");
 
   //Set background color

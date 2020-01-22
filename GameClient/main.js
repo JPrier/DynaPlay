@@ -2,6 +2,8 @@
 
 /// FUNCTIONS
 
+let count = 0;
+
 let keyPress = function(event) {
   controller.keyPress(event.type, event.keyCode);
   //game.map.objects[0].color == "white" ?  game.map.objects[0].color = "blue" : game.map.objects[0].color = "white";
@@ -17,6 +19,14 @@ let resize = function(event) {
 let render = function() {
 
   // game.mapGenerator.smoothMap(game.map.objects, game.sizeX, game.sizeY);
+  if (count % 10 == 0 && count <= 50) {
+    game.smoothWorld();
+  }
+  if (count == 60) {
+    game.connectWorld();
+    console.log("done");
+  }
+  count++;
 
   //TODO draw game map (static objects in map array)
   display.drawMap(game.map);
@@ -40,15 +50,24 @@ let update = function() {
   // TODO: add a condition to stop the engine (an end goal parameter)
 };
 
-let createNewWorld = function() {
+let createNewWorld = function(event) {
   game.createWorld();
+}
+
+let currentRegion = function(event) {
+  let rect = display.contextCanvas.getBoundingClientRect();
+  let x = Math.ceil((event.clientX-rect.left)/5)*5;
+  let y = Math.ceil((event.clientY-rect.top)/5)*5;
+  console.log(x + ", " + y);
+
+  console.log(game.map.objects[x*game.sizeX+y].region);
 }
 
 /// OBJECTS
 const mainSetup = function(gameSettings) {
   //INIT
   game = new Game(gameSettings);
-  display = new Display(document.querySelector("canvas"), "black");
+  display = new Display(document.querySelector("canvas"), "blue");
   engine = new Engine(1000/30, update, render);
 
   let controls = [function() {game.controllerUp()},
@@ -62,6 +81,7 @@ const mainSetup = function(gameSettings) {
   window.addEventListener("keydown", keyPress);
   window.addEventListener("resize", resize);
   window.addEventListener("click", createNewWorld);
+  window.addEventListener("mousemove", currentRegion);
 
   game.setup();
   display.setCanvasSize(game.sizeX, game.sizeY);

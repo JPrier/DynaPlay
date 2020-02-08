@@ -19,14 +19,14 @@ let resize = function(event) {
 let render = function() {
 
   // game.mapGenerator.smoothMap(game.map.objects, game.sizeX, game.sizeY);
-  if (count % 10 == 0 && count <= 50) {
-    game.smoothWorld();
-  }
-  if (count == 60) {
-    game.connectWorld();
-    console.log("done");
-  }
-  count++;
+  // if (count % 10 == 0 && count <= 50) {
+  //   game.smoothWorld();
+  // }
+  // if (count == 60) {
+  //   game.connectWorld();
+  //   console.log("done");
+  // }
+  // count++;
 
   //TODO draw game map (static objects in map array)
   display.drawMap(game.map);
@@ -54,13 +54,15 @@ let createNewWorld = function(event) {
   game.createWorld();
 }
 
+// TODO: Fix this -- regions arent right
 let currentRegion = function(event) {
   let rect = display.contextCanvas.getBoundingClientRect();
-  let x = Math.ceil((event.clientX-rect.left)/5)*5;
-  let y = Math.ceil((event.clientY-rect.top)/5)*5;
-  console.log(x + ", " + y);
-
-  console.log(game.map.objects[x*game.sizeX+y].region);
+  let xRatio = display.context.canvas.width / game.sizeX;
+  let yRatio = display.context.canvas.height / game.sizeY;
+  x = Math.ceil(((event.clientX-rect.left)/xRatio)/5)*5;
+  y = Math.ceil(((event.clientY-rect.top)/yRatio)/5)*5;
+  // console.log(x + ", " + y);
+  // console.log(game.map.objects[x*game.sizeX+y].region);
 }
 
 /// OBJECTS

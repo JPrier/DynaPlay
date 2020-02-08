@@ -3,7 +3,7 @@
 
 const MapGenerator = function(fillPercent) {
   this.fillPercent = fillPercent;
-  this.smoothingIters = 1;
+  this.smoothingIters = 5;
 
 
   this.generateMap = function(randomType, sizeX, sizeY, tileSize) {
@@ -12,6 +12,9 @@ const MapGenerator = function(fillPercent) {
     for (let i = 0; i < this.smoothingIters; i++) {
       map = this.smoothMap(map, sizeX, sizeY);
     }
+
+    map = this.connectMap(map, sizeX, sizeY);
+
     return map;
   };
 
@@ -117,40 +120,56 @@ const MapGenerator = function(fillPercent) {
     let currentRegion = 0;
     for (let i = 0; i < sizeX; i++) {
       for (let j = 0; j < sizeY; j++) {
-        if (map[i*sizeX+j].color == "black" && map[i*sizeX+j].region == undefined) {
-          console.log(i + ", " + j);
+        if (map[i*sizeX+j].shape.color == "black" && map[i*sizeX+j].region == undefined) {
           regions[currentRegion] = [[i,j]];
-          //map[i*sizeX+j].color = '#' + (Math.floor((Math.abs(currentRegion)*1000000))).toString(16).padStart(6, '0');
+          map[i*sizeX+j].shape.color = '#' + (Math.floor((Math.abs(currentRegion)*1000000))).toString(16).padStart(6, '0');
           map[i*sizeX+j].region = currentRegion;
 
-          regionObjectStack = this.getDirectionalNeighbors(map, i, j, sizeX, sizeY, color, []);
+          regionObjectStack = this.getDirectionalNeighbors(map, i, j, sizeX, sizeY, "black", []);
+          let seen = [];
 
           while (regionObjectStack.length > 0) {
             coords = regionObjectStack.pop();
+            seen.push(coords);
             x = coords[0]; y = coords[1];
             regions[currentRegion] = [[x,y]];
-            //map[x*sizeX+y].color = '#' + (Math.floor((Math.abs(currentRegion)*1000000))).toString(16).padStart(6, '0');
+            map[x*sizeX+y].shape.color = '#' + (Math.floor((Math.abs(currentRegion)*1000000))).toString(16).padStart(6, '0');
             map[x*sizeX+y].region = currentRegion;
-            regionObjectStack = this.getDirectionalNeighbors(map, x, y, sizeX, sizeY, color, regionObjectStack);
+            let newCoords = this.getDirectionalNeighbors(map, x, y, sizeX, sizeY, "black", []);
+            for (let k = 0; k < newCoords.length; k++) {
+              if (!seen.includes(newCoords[k])) {
+                regionObjectStack.push(newCoords[k]);
+              }
+            }
           }
           currentRegion++;
         }
       }
     }
+
+    //fill in rest of regions
+    for (let i = 0; i < sizeX; i++) {
+      for (let j = 0; j < sizeY; j++) {
+        if (map[i*sizeX+j].region == undefined) {
+          map[i*sizeX+j].region = -1;
+        }
+      }
+    }
+
     return map;
   };
 
   this.getDirectionalNeighbors = function(map, x, y, sizeX, sizeY, color, list) {
-    if (x-1 > sizeX && map[(x-1)*sizeX+y].color == "black") {
+    if (x-1 > 0 && map[(x-1)*sizeX+y].shape.color == color && map[(x-1)*sizeX+y].region == undefined) {
       list.push([x-1,y]);
     }
-    if (x+1 < sizeX && map[(x+1)*sizeX+y].color == "black") {
+    if (x+1 < sizeX && map[(x+1)*sizeX+y].shape.color == color && map[(x+1)*sizeX+y].region == undefined) {
       list.push([x+1,y]);
     }
-    if (y-1 > sizeY && map[x*sizeX+(y-1)].color == "black") {
+    if (y-1 > 0 && map[x*sizeX+(y-1)].shape.color == color && map[x*sizeX+(y-1)].region == undefined) {
       list.push([x,y-1]);
     }
-    if (y+1 < sizeY && map[x*sizeX+(y+1)].color == "black") {
+    if (y+1 < sizeY && map[x*sizeX+(y+1)].shape.color == color && map[x*sizeX+(y+1)].region == undefined) {
       list.push([x,y+1]);
     }
     return list;

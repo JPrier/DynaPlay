@@ -7,18 +7,53 @@ const MapGenerator = function(fillPercent) {
 
 
   this.generateMap = function(randomType, sizeX, sizeY, tileSize) {
+    let date = new Date();
+    let start = date.getTime();
+    console.log(start);
     let map = this.randomlyFilledMap(randomType, sizeX, sizeY, tileSize);
+    date = new Date();
+    let time2 = date.getTime();
+    console.log("RandomFill Took: " + (start-time2));
+    console.log(map.length);
+    let mapFillPercent = this.countFillPercent(map);
+
+    while(mapFillPercent < this.fillPercent + .05 && mapFillPercent > this.fillPercent + .05) {
+      console.log(mapFillPercent);
+      map = this.randomlyFilledMap(randomType, sizeX, sizeY, tileSize);
+      mapFillPercent = this.countFillPercent(map);
+    }
+    date = new Date();
+    let time3 = date.getTime();
+    console.log("countFillPercent Took: " + (time2-time3));
 
     for (let i = 0; i < this.smoothingIters; i++) {
       map = this.smoothMap(map, sizeX, sizeY);
     }
+    date = new Date();
+    let time4 = date.getTime();
+    console.log("smoothMap Took: " + (time3-time4));
 
     map = this.connectMap(map, sizeX, sizeY);
+    date = new Date();
+    let time5 = date.getTime();
+    console.log("connectMap Took: " + (time4-time5));
 
+    console.log("new Map took: " + (start-time5));
+    console.log(time5);
+    console.log(map.length);
     return map;
   };
 
-  // TODO: Add OctavePerlin: https://flafla2.github.io/2014/08/09/perlinnoise.html
+  this.countFillPercent = function(map) {
+    let count = 0;
+    for (let i = 0; i < map.length; i++) {
+      if (map[i].shape.color == "white") {
+        count++;
+      }
+    }
+    return count;
+  }
+
   this.randomlyFilledMap = function(randomType, sizeX, sizeY, tileSize) {
     let map = [];
     let seed = Math.random() * Math.random() * 100;
@@ -61,7 +96,7 @@ const MapGenerator = function(fillPercent) {
               amplitude *= 0.5;
               frequency *= 2;
 
-              noise.seed(seed + (o*seed));
+              noise.seed(seed + ((o+1)*seed));
             }
             objectExists = Math.abs(value)/maxValue < this.fillPercent;
             noise.seed(seed);
@@ -134,12 +169,12 @@ const MapGenerator = function(fillPercent) {
   };
 
   this.connectMap = function(map, sizeX, sizeY) {
-    let regions = [];
+    //let regions = [];
     let currentRegion = 0;
     for (let i = 0; i < sizeX; i++) {
       for (let j = 0; j < sizeY; j++) {
         if (map[i*sizeX+j].shape.color == "black" && map[i*sizeX+j].region == undefined) {
-          regions[currentRegion] = [[i,j]];
+          //regions[currentRegion] = [[i,j]];
           map[i*sizeX+j].shape.color = '#' + (Math.floor((Math.abs(currentRegion)*1000000))).toString(16).padStart(6, '0');
           map[i*sizeX+j].region = currentRegion;
 
@@ -150,7 +185,9 @@ const MapGenerator = function(fillPercent) {
             coords = regionObjectStack.pop();
             seen.push(coords);
             x = coords[0]; y = coords[1];
-            regions[currentRegion] = [[x,y]];
+            // if (!regions[currentRegion].includes([x,y])) {
+            //   regions[currentRegion].push([[x,y]]);
+            // }
             map[x*sizeX+y].shape.color = '#' + (Math.floor((Math.abs(currentRegion)*1000000))).toString(16).padStart(6, '0');
             map[x*sizeX+y].region = currentRegion;
             let newCoords = this.getDirectionalNeighbors(map, x, y, sizeX, sizeY, "black", []);
@@ -164,6 +201,17 @@ const MapGenerator = function(fillPercent) {
         }
       }
     }
+    // console.log(regions);
+    // for (let i = 0; i < regions.length; i++) {
+    //   if (regions[i].length < 40) {
+    //     for (let j = 0; j < regions[i].length; j++){
+    //       let coords = regions[i][j];
+    //       if(map[coords[0]*sizeX+coords[1]]) {
+    //         map[coords[0]*sizeX+coords[1]].shape.color = "white";
+    //       }
+    //     }
+    //   }
+    // }
 
     //fill in rest of regions
     for (let i = 0; i < sizeX; i++) {

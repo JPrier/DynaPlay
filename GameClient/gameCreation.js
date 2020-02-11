@@ -45,7 +45,7 @@ for (let i=0;i<keys.length;i++) {
    }
 }
 
-bodyInner += "<div><button onclick=validateParams()>Start Game</button></div>"
+bodyInner += "<div style='margin:20px;'><button onclick=validateParams()>Start Game</button></div>"
 
 document.body.innerHTML = bodyInner;
 

@@ -90,7 +90,7 @@ const mainSetup = function(gameSettings) {
 
   resize();
 
-  game.createWorld();
+  //game.createWorld();
 
   engine.start();
 }

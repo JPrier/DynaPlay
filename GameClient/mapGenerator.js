@@ -18,6 +18,7 @@ const MapGenerator = function(fillPercent) {
     return map;
   };
 
+  // TODO: Add OctavePerlin: https://flafla2.github.io/2014/08/09/perlinnoise.html
   this.randomlyFilledMap = function(randomType, sizeX, sizeY, tileSize) {
     let map = [];
     let seed = Math.random() * Math.random() * 100;
@@ -47,6 +48,23 @@ const MapGenerator = function(fillPercent) {
             //BufferedCubic
             objectExists = bufferedCubicNoise.sample(i, j) < this.fillPercent;
             break;
+          case 5:
+            //OctavePerlin
+            let value = 0;
+            let amplitude = 1;
+            let maxValue = 0;
+            let frequency = 1;
+            for (let o=0; o<5; o++) {
+              value += noise.perlin2(i/100 * frequency, j/100 * frequency) * amplitude;
+              maxValue += amplitude;
+
+              amplitude *= 0.5;
+              frequency *= 2;
+
+              noise.seed(seed + (o*seed));
+            }
+            objectExists = Math.abs(value)/maxValue < this.fillPercent;
+            noise.seed(seed);
         }
         map.push(
           new StaticObject(

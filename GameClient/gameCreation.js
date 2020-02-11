@@ -15,7 +15,7 @@ let settings = {
   "itemColor": "green",
   "endGoal": [[0,1,2], ["Hit point amount","Die","Last Alive"]],
   "fillPercent": [0,100],
-  "randomMethod": [[0,1,2,3,4], ["Perlin Noise", "Simplex Noise", "Random", "Cubic Noise", "Buffered Cubic Noise"]]
+  "randomMethod": [[0,1,2,3,4,5], ["Perlin Noise", "Simplex Noise", "Random", "Cubic Noise", "Buffered Cubic Noise", "Octave Perlin"]]
 }
 
 //Set Body programatically using the gameParams

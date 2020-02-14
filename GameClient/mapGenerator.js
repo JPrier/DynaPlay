@@ -7,52 +7,75 @@ const MapGenerator = function(fillPercent) {
 
 
   this.generateMap = function(randomType, sizeX, sizeY, tileSize) {
-    let date = new Date();
-    let start = date.getTime();
-    console.log(start);
-    let map = this.randomlyFilledMap(randomType, sizeX, sizeY, tileSize);
-    date = new Date();
-    let time2 = date.getTime();
-    console.log("RandomFill Took: " + (start-time2));
-    console.log(map.length);
+
+    let map = this.generateRandomMap(randomType, sizeX, sizeY, tileSize);
+
     let mapFillPercent = this.countFillPercent(map);
 
-    while(mapFillPercent < this.fillPercent + .05 && mapFillPercent > this.fillPercent + .05) {
-      console.log(mapFillPercent);
-      map = this.randomlyFilledMap(randomType, sizeX, sizeY, tileSize);
+    console.log(mapFillPercent);
+    console.log(this.fillPercent);
+    console.log(this.fillPercent + .05);
+    while(!(mapFillPercent > this.fillPercent - .05)) { //mapFillPercent < this.fillPercent + .05 &&
+      map = this.generateRandomMap(randomType, sizeX, sizeY, tileSize);
       mapFillPercent = this.countFillPercent(map);
+      console.log(mapFillPercent);
+
+      // TODO: check feasibility by checking height and width
     }
-    date = new Date();
-    let time3 = date.getTime();
-    console.log("countFillPercent Took: " + (time2-time3));
+
+    return map;
+  };
+
+  this.generateRandomMap = function(randomType, sizeX, sizeY, tileSize) {
+    let map = this.randomlyFilledMap(randomType, sizeX, sizeY, tileSize);
 
     for (let i = 0; i < this.smoothingIters; i++) {
       map = this.smoothMap(map, sizeX, sizeY);
     }
-    date = new Date();
-    let time4 = date.getTime();
-    console.log("smoothMap Took: " + (time3-time4));
 
-    map = this.connectMap(map, sizeX, sizeY);
-    date = new Date();
-    let time5 = date.getTime();
-    console.log("connectMap Took: " + (time4-time5));
+    map = this.detectRegions(map, sizeX, sizeY);
 
-    console.log("new Map took: " + (start-time5));
-    console.log(time5);
-    console.log(map.length);
+    // find largest region and delete the rest
+    let regions = this.getRegionListFromMap(map);
+    let maxSize = 0;
+    let maxRegion = -1;
+    for (let i = 0; i < regions.length; i++) {
+      if (regions[i].length > maxSize) {
+        maxSize = regions[i].length;
+        maxRegion = i;
+      }
+    }
+    for (let i = 0; i < map.length; i++) {
+      if (!regions[maxRegion].includes(i)) {
+        map[i].shape.color = "white";
+      }
+    }
+
+    console.log("New Map");
     return map;
+  };
+
+  this.getRegionListFromMap = function(map) {
+    let regions = [];
+    for (let i = 0; i < map.length; i++) {
+      if (regions[map[i].region]) {
+        regions[map[i].region].push(i);
+      } else {
+        regions[map[i].region] = [i];
+      }
+    }
+    return regions;
   };
 
   this.countFillPercent = function(map) {
     let count = 0;
     for (let i = 0; i < map.length; i++) {
-      if (map[i].shape.color == "white") {
+      if (!(map[i].shape.color == "white")) {
         count++;
       }
     }
-    return count;
-  }
+    return count/map.length;
+  };
 
   this.randomlyFilledMap = function(randomType, sizeX, sizeY, tileSize) {
     let map = [];
@@ -108,7 +131,7 @@ const MapGenerator = function(fillPercent) {
             j*tileSize,
             tileSize,
             tileSize,
-            objectExists ? "white" : "black",
+            objectExists ? "black" : "white",
             objectExists,
             objectExists
           )
@@ -168,7 +191,7 @@ const MapGenerator = function(fillPercent) {
     return objectCount;
   };
 
-  this.connectMap = function(map, sizeX, sizeY) {
+  this.detectRegions = function(map, sizeX, sizeY) {
     //let regions = [];
     let currentRegion = 0;
     for (let i = 0; i < sizeX; i++) {

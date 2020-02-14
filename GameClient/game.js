@@ -21,7 +21,7 @@ const Game = function(gameSettings) {
   this.tileSize = 5;
   this.sizeX = 500;
   this.sizeY = 500;
-  this.mapGenerator = new MapGenerator(this.settings["fillPercent"]);
+  this.mapGenerator = new MapGenerator(parseFloat(this.settings["fillPercent"]));
     //.2 for perlin, .3 for simplex, .5 for random
   this.gravity = .5;
   this.velocityChange = 5;

@@ -12,13 +12,9 @@ const MapGenerator = function(fillPercent) {
 
     let mapFillPercent = this.countFillPercent(map);
 
-    console.log(mapFillPercent);
-    console.log(this.fillPercent);
-    console.log(this.fillPercent + .05);
     while(!(mapFillPercent > this.fillPercent - .05)) { //mapFillPercent < this.fillPercent + .05 &&
       map = this.generateRandomMap(randomType, sizeX, sizeY, tileSize);
       mapFillPercent = this.countFillPercent(map);
-      console.log(mapFillPercent);
 
       // TODO: check feasibility by checking height and width
     }

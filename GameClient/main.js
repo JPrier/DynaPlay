@@ -19,7 +19,12 @@ let resize = function(event) {
 };
 
 let render = function() {
+  // -- camera following player -- //
+  display.context.save();
+  display.context.translate(-(game.player.shape.loc_x - display.canvas.width / 2),
+                            -(game.player.shape.loc_y - display.canvas.height / 2));
 
+  // -- drawing objects -- //
   display.drawMap(game.map);
 
   if (game.player) {
@@ -30,6 +35,9 @@ let render = function() {
   }
 
   display.render();
+
+  // Restore the context to avoid translations acculating
+  display.context.restore();
 };
 
 let update = function() {

@@ -19,19 +19,20 @@ const Game = function(gameSettings) {
   this.player = undefined;
   this.npcs = [];
   this.tileSize = 5;
-  this.sizeX = 500;
-  this.sizeY = 500;
+  this.sizeX = 499;
+  this.sizeY = 499;
   this.mapGenerator = new MapGenerator(parseFloat(this.settings["fillPercent"]));
-    //.2 for perlin, .3 for simplex, .5 for random
+    //.1-.2 for perlin, .3 for simplex, .5 for random
   this.gravity = .5;
   this.velocityChange = 5;
+  this.controls = [false, false, false, false] // left, right, up, down
 
   //TODO: Set these based off of game settings
   this.setup = function() {
     this.map = {
       objects: []
     }
-    this.player = new Player(0, 30, 30, 20, 20, this.settings["playerColor"], true);
+    this.player = new Player(0, 30, 30, this.tileSize, this.tileSize, this.settings["playerColor"], true);
     this.npcs = [];
     for (let i=0; i<parseInt(this.settings["NPCs"]);i++) {
       this.npcs.push(new NPC(0, random(this.sizeX), random(this.sizeY), 30, 20, this.settings["NPCColor"], true, true));
@@ -63,35 +64,87 @@ const Game = function(gameSettings) {
 
   this.update = function() {
 
-    if (this.player) {
-      //TODO: move collision here to avoid getting the player stuck from velocity
-      this.player.shape.loc_x += this.movementAmount() * this.player.velocityX;
-      this.player.shape.loc_y += this.movementAmount() * this.player.velocityY;
+    for (let i = 0; i < this.controls.length; i++) {
 
-      this.player.velocityX -= this.player.weight * this.gravity;
-      this.player.velocityY -= this.player.weight * this.gravity;
-
-      if (this.player.velocityX < 0) {
-        this.player.velocityX = 0;
-      }
-      if (this.player.velocityY < 0) {
-        this.player.velocityY = 0;
+      if (this.controls[i]) {
+       switch(i) {
+         case 0: this.moveLeft(); break;
+         case 1: this.moveRight(); break;
+         case 2: this.moveUp(); break;
+         case 3: this.moveDown(); break;
+       }
       }
     }
 
-    for (let i = 0; i < this.npcs.length; i++) {
-      let prevX = this.npcs[i].shape.loc_x;
-      let prevY = this.npcs[i].shape.loc_y;
-      this.npcs[i].shape.loc_x = this.npcs[i].shape.loc_x + ((Math.floor(Math.random() * 2) * (Math.random() < 0.5 ? -1 : 1)) * this.movementAmount());
-      this.npcs[i].shape.loc_y = this.npcs[i].shape.loc_y + ((Math.floor(Math.random() * 2) * (Math.random() < 0.5 ? -1 : 1)) * this.movementAmount());
-      if (this.collides(this.npcs[i], i)) {
-        this.npcs[i].shape.loc_x = prevX;
-        this.npcs[i].shape.loc_y = prevY;
-      }
+    if (this.player) {
+
+      //TODO: move collision here to avoid getting the player stuck from velocity
+      // this.player.shape.loc_x += this.movementAmount() * this.player.velocityX;
+      // this.player.shape.loc_y += this.movementAmount() * this.player.velocityY;
+      //
+      // this.player.velocityX -= this.player.weight * this.gravity;
+      // this.player.velocityY -= this.player.weight * this.gravity;
+      //
+      // if (this.player.velocityX < 0) {
+      //   this.player.velocityX = 0;
+      // }
+      // if (this.player.velocityY < 0) {
+      //   this.player.velocityY = 0;
+      // }
+    }
+
+    // for (let i = 0; i < this.npcs.length; i++) {
+    //   let prevX = this.npcs[i].shape.loc_x;
+    //   let prevY = this.npcs[i].shape.loc_y;
+    //   this.npcs[i].shape.loc_x = this.npcs[i].shape.loc_x + ((Math.floor(Math.random() * 2) * (Math.random() < 0.5 ? -1 : 1)) * this.movementAmount());
+    //   this.npcs[i].shape.loc_y = this.npcs[i].shape.loc_y + ((Math.floor(Math.random() * 2) * (Math.random() < 0.5 ? -1 : 1)) * this.movementAmount());
+    //   if (this.collides(this.npcs[i], i)) {
+    //     this.npcs[i].shape.loc_x = prevX;
+    //     this.npcs[i].shape.loc_y = prevY;
+    //   }
+    // }
+  };
+
+  // CONTROLS //
+
+  this.controllerLeft = function(value) {
+   this.controls[0] = value;
+   if (value) {
+     this.controls[1] = false;
+   }
+  };
+
+  this.controllerRight = function(value) {
+   this.controls[1] = value;
+   if (value) {
+     this.controls[0] = false;
+   }
+  };
+
+  this.controllerUp = function(value) {
+   this.controls[2] = value;
+   if (value) {
+     this.controls[3] = false;
+   }
+  };
+
+  this.controllerDown = function(value) {
+   this.controls[3] = value;
+   if (value) {
+     this.controls[2] = false;
+   }
+  };
+
+  this.movementAmount = function() {
+    switch(parseInt(this.settings["worldType"])) {
+      case 0: return this.tileSize; break;
+      case 2: return 1; break;
+      case 3: return 1; break;
+      default: return 0; break;
     }
   };
 
-  this.controllerLeft = function() {
+  this.moveLeft = function() {
     if (this.player) {
       this.player.shape.loc_x -= this.movementAmount();
       this.player.velocityX = -1*this.velocityChange;
@@ -102,7 +155,7 @@ const Game = function(gameSettings) {
     }
   };
 
-  this.controllerRight = function() {
+  this.moveRight = function() {
     if (this.player) {
       this.player.shape.loc_x += this.movementAmount();
       this.player.velocityX = this.velocityChange;
@@ -113,7 +166,7 @@ const Game = function(gameSettings) {
     }
   };
 
-  this.controllerUp = function() {
+  this.moveUp = function() {
     if (this.player) {
       if (this.settings["worldType"] == "3") {
         //JUMP
@@ -130,7 +183,7 @@ const Game = function(gameSettings) {
     }
   };
 
-  this.controllerDown = function() {
+  this.moveDown = function() {
     if (this.player) {
       this.player.shape.loc_y += this.movementAmount();
       this.player.velocityY = this.velocityChange;
@@ -141,13 +194,7 @@ const Game = function(gameSettings) {
     }
   };
 
-  this.movementAmount = function() {
-    switch(this.settings["worldType"]) {
-      case "0": return this.tileSize; break;
-      case "2": return 1; break;
-      case "3": return 1; break;
-    }
-  };
+  // Collision //
 
   this.collidesWithPlayer =  function(object) {
     if (object.shape.collidesWithPlayer) {

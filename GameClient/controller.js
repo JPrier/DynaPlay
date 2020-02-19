@@ -1,19 +1,21 @@
 // Controller will hold all the functions needed for eventListeners on input
 
 const Controller = function(controls) {
-  this.upPressed = controls[0];
-  this.downPressed = controls[1];
-  this.leftPressed = controls[2];
-  this.rightPressed = controls[3];
+  this.left = controls[0];
+  this.right = controls[1];
+  this.up = controls[2];
+  this.down = controls[3];
 
-  this.keyPress = function(type, keyCode) {
-    //TODO: Add more keys and look into getting multiple keys simulatenously
+  this.keyChanged = function(type, keyCode) {
+
+    let isPressed = type == "keydown";
+
     switch(keyCode) {
       case 32: break; //jump
-      case 65: this.leftPressed(); break;
-      case 68: this.rightPressed(); break;
-      case 83: this.downPressed(); break;
-      case 87: this.upPressed(); break;
+      case 65: this.left(isPressed); break;
+      case 68: this.right(isPressed); break;
+      case 83: this.down(isPressed); break;
+      case 87: this.up(isPressed); break;
     }
   };
 };

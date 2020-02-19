@@ -5,32 +5,23 @@
 let count = 0;
 
 let keyPress = function(event) {
-  controller.keyPress(event.type, event.keyCode);
-  //game.map.objects[0].color == "white" ?  game.map.objects[0].color = "blue" : game.map.objects[0].color = "white";
+  controller.keyChanged(event.type, event.keyCode);
+};
+
+let keyRelease = function(event) {
+  controller.keyChanged(event.type, event.keyCode);
 };
 
 let resize = function(event) {
   display.resize(document.documentElement.clientWidth,
                  document.documentElement.clientHeight,
                  scale);
-  //game.updateSize(display.buffer.canvas.width, display.buffer.canvas.height);
 };
 
 let render = function() {
 
-  // game.mapGenerator.smoothMap(game.map.objects, game.sizeX, game.sizeY);
-  // if (count % 10 == 0 && count <= 50) {
-  //   game.smoothWorld();
-  // }
-  // if (count == 60) {
-  //   game.connectWorld();
-  //   console.log("done");
-  // }
-  // count++;
-
-  //TODO draw game map (static objects in map array)
   display.drawMap(game.map);
-  //TODO draw objects (players, npcs, etc)
+
   if (game.player) {
     display.drawObject(game.player.shape);
   }
@@ -43,11 +34,7 @@ let render = function() {
 
 let update = function() {
 
-  //TODO: if controller active change game state
-
   game.update();
-
-  // TODO: add a condition to stop the engine (an end goal parameter)
 };
 
 let createNewWorld = function(event) {
@@ -56,13 +43,20 @@ let createNewWorld = function(event) {
 
 // TODO: Fix this -- regions arent right
 let currentRegion = function(event) {
+
+  // Seems to have no correlation between region/color/location
+
   let rect = display.contextCanvas.getBoundingClientRect();
   let xRatio = display.context.canvas.width / game.sizeX;
   let yRatio = display.context.canvas.height / game.sizeY;
-  x = Math.ceil(((event.clientX-rect.left)/xRatio)/5)*5;
-  y = Math.ceil(((event.clientY-rect.top)/yRatio)/5)*5;
-  // console.log(x + ", " + y);
-  // console.log(game.map.objects[x*game.sizeX+y].region);
+  // x = Math.ceil(((event.clientX-rect.left)/xRatio)/5)*5;
+  // y = Math.ceil(((event.clientY-rect.top)/yRatio)/5)*5;
+  x = Math.ceil((event.clientX-rect.left)/xRatio);
+  y = Math.ceil((event.clientY-rect.top)/yRatio);
+
+  console.log(x + ", " + y);
+  console.log(game.map.objects[y*game.sizeX+x].region);
+  console.log(game.map.objects[y*game.sizeX+x].shape.color);
 }
 
 /// OBJECTS
@@ -72,25 +66,24 @@ const mainSetup = function(gameSettings) {
   display = new Display(document.querySelector("canvas"), "blue");
   engine = new Engine(1000/30, update, render);
 
-  let controls = [function() {game.controllerUp()},
-                  function() {game.controllerDown()},
-                  function() {game.controllerLeft()},
-                  function() {game.controllerRight()}];
+  let controls = [function(isPressed) {game.controllerLeft(isPressed)},
+                  function(isPressed) {game.controllerRight(isPressed)},
+                  function(isPressed) {game.controllerUp(isPressed)},
+                  function(isPressed) {game.controllerDown(isPressed)}];
   controller = new Controller(controls);
 
   // START
 
   window.addEventListener("keydown", keyPress);
+  window.addEventListener("keyup", keyRelease);
   window.addEventListener("resize", resize);
   window.addEventListener("click", createNewWorld);
-  window.addEventListener("mousemove", currentRegion);
+  //window.addEventListener("mousemove", currentRegion);
 
   game.setup();
-  display.setCanvasSize(game.sizeX, game.sizeY);
+  display.setCanvasSize(game.sizeX+1, game.sizeY+1);
 
   resize();
-
-  //game.createWorld();
 
   engine.start();
 }
